@@ -3,12 +3,18 @@
 #include <vector>
 #include <unordered_map>
 
+namespace js {
+
 enum class TokenType {
     NUMBER,
     STRING,
     IDENTIFIER,
     KEYWORD,
     OPERATOR,
+    LEFT_PAREN,
+    RIGHT_PAREN,
+    COMMA,
+    DOT,
     EOF_TOKEN
 };
 
@@ -35,3 +41,5 @@ public:
     Lexer(const std::string& source);
     std::vector<Token> tokenize();
 };
+
+} 

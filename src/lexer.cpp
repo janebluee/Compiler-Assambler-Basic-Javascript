@@ -2,7 +2,7 @@
 #include <cctype>
 #include <stdexcept>
 
-Lexer::Lexer(const std::string& source) : input(source), position(0) {
+js::Lexer::Lexer(const std::string& source) : input(source), position(0) {
     keywords = {
         {"let", TokenType::KEYWORD},
         {"const", TokenType::KEYWORD},
@@ -17,18 +17,18 @@ Lexer::Lexer(const std::string& source) : input(source), position(0) {
     current_char = input.empty() ? '\0' : input[0];
 }
 
-void Lexer::advance() {
+void js::Lexer::advance() {
     position++;
     current_char = position < input.length() ? input[position] : '\0';
 }
 
-void Lexer::skip_whitespace() {
+void js::Lexer::skip_whitespace() {
     while (current_char && std::isspace(current_char)) {
         advance();
     }
 }
 
-std::string Lexer::get_number() {
+std::string js::Lexer::get_number() {
     std::string result;
     bool hasDecimal = false;
     
@@ -44,7 +44,7 @@ std::string Lexer::get_number() {
     return result;
 }
 
-std::string Lexer::get_identifier() {
+std::string js::Lexer::get_identifier() {
     std::string result;
     
     while (current_char && (std::isalnum(current_char) || current_char == '_')) {
@@ -55,7 +55,7 @@ std::string Lexer::get_identifier() {
     return result;
 }
 
-std::string Lexer::get_string() {
+std::string js::Lexer::get_string() {
     char quote = current_char;
     advance();
     std::string result;
@@ -82,8 +82,8 @@ std::string Lexer::get_string() {
     return result;
 }
 
-std::vector<Token> Lexer::tokenize() {
-    std::vector<Token> tokens;
+std::vector<js::Token> js::Lexer::tokenize() {
+    std::vector<js::Token> tokens;
     
     while (current_char) {
         if (std::isspace(current_char)) {
@@ -112,7 +112,13 @@ std::vector<Token> Lexer::tokenize() {
             continue;
         }
         
-        if (std::string("+-*/()=;{}[].,<>!&|").find(current_char) != std::string::npos) {
+        if (current_char == '.') {
+            advance();
+            tokens.emplace_back(TokenType::DOT, ".");
+            continue;
+        }
+        
+        if (std::string("+-*/()=;{}[],<>!&|").find(current_char) != std::string::npos) {
             std::string op(1, current_char);
             advance();
             
